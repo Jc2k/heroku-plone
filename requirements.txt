@@ -231,3 +231,7 @@ repoze.tm2==1.0b2
 repoze.retry==1.0
 gunicorn==0.13.3
 
+## Extra requirements for RelStorage
+psycopg2==2.4.2
+RelStorage==1.5.0
+
