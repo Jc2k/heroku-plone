@@ -1,8 +1,11 @@
-import os, sys, optparse
+import os, sys, optparse, urlparse
 
 p = optparse.OptionParser()
 p.add_option("-p", "--port")
 options, args = p.parse_args()
+
+
+db = urlparse.urlparse(os.environ.get("DATABASE_URL", 'postgres://username:password@hostname/database'))
 
 
 # Zope configuration to poke variables into when web process is started
@@ -14,14 +17,18 @@ instancehome %(instance_home)s
 </http-server>
 
 <zodb_db main>
-#    <filestorage>
-#      path %(instance_home)s/var/Data.fs
-#    </filestorage>
+    #<relstorage>
+    #  <postgresql>
+    #    dsn dbname='%(db_name)s' user='%(db_username)s' host='%(db_host)s' password='%(db_password)s'
+    #  </postgresql>
+    #</relstorage>
+
     <temporarystorage>
       name temporary storage for main data
     </temporarystorage>
-    mount-point /
     container-class Products.TemporaryFolder.TemporaryContainer
+
+    mount-point /
 </zodb_db>
 
 <zodb_db temporary>
@@ -50,6 +57,10 @@ if not os.path.exists(conf_file):
 open(conf_file, "w").write(zope_conf % dict(
     instance_home=instance_home,
     port=options.port,
+    db_username=db.username,
+    db_password=db.password,
+    db_host=db.hostname,
+    db_name=db.path[1:],
     ))
 
 
