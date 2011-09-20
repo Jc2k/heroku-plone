@@ -2,11 +2,11 @@ from Zope2.Startup.run import configure
 from Zope2 import startup
 import os
 
-root_dir = os.path.join(os.path.basename(__file__), "..")
+root_dir = os.path.join(os.path.dirname(__file__), "..")
 conf_dir = os.path.join(root_dir, "zope", "etc", "zope.conf")
 
 if not os.path.exists(conf_dir):
-    os.system("%(root_dir)s/bin/mkzopeinstance -u zopeadmin:zopeadmin -d %(root_dir)s/zope")
+    os.system("%(root_dir)s/bin/mkzopeinstance -u zopeadmin:zopeadmin -d %(root_dir)s/zope" % dict(root_dir=root_dir))
 
 configure(conf_dir)
 startup()
