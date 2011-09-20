@@ -1,1 +1,2 @@
-web: ./bin/gunicorn --workers=4 -b 0.0.0.0:$PORT awesome.app
+web: ./bin/python awesome/app.py -p $PORT
+

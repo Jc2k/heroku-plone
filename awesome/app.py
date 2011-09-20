@@ -49,7 +49,7 @@ if not os.path.exists(conf_file):
 # Rewrite zope.conf according to the port we are supposd to listen on
 open(conf_file, "w").write(zope_conf % dict(
     instance_home=instance_home,
-    port=p.port,
+    port=options.port,
     ))
 
 
