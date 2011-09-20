@@ -223,3 +223,11 @@ unittest2==0.5.1
 zope.hookable==3.4.1
 zope.copypastemove==3.7.0
 zope.copy==3.5.0
+
+## Extra requirements for WSGI
+Paste
+PasteScript
+repoze.tm2==1.0b2
+repoze.retry==1.0
+gunicorn==0.13.3
+
