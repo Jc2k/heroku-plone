@@ -29,7 +29,7 @@ rel_storage = """
     </relstorage>
     """
 
-temporary_storage = """
+temp_storage = """
     <temporarystorage>
       name temporary storage for main data
     </temporarystorage>
@@ -105,6 +105,7 @@ open(conf_file, "w").write(zope_conf % dict(
     port=options.port,
     ))
 
+print os.environ
 
 # Actually start zope - think i might prefer to import things by hand here long term
 os.environ["INSTANCE_HOME"] = instance_home
