@@ -1,2 +1,2 @@
-web: ./bin/python awesome/app.py -p $PORT
+web: ./bin/python runner.py -p $PORT -d $DATABASE_URL
 
