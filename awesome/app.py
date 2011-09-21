@@ -17,16 +17,16 @@ instancehome %(instance_home)s
 </http-server>
 
 <zodb_db main>
-    #<relstorage>
-    #  <postgresql>
-    #    dsn dbname='%(db_name)s' user='%(db_username)s' host='%(db_host)s' password='%(db_password)s'
-    #  </postgresql>
-    #</relstorage>
+    <relstorage>
+      <postgresql>
+        dsn dbname='%(db_name)s' user='%(db_username)s' host='%(db_host)s' password='%(db_password)s'
+      </postgresql>
+    </relstorage>
 
-    <temporarystorage>
-      name temporary storage for main data
-    </temporarystorage>
-    container-class Products.TemporaryFolder.TemporaryContainer
+    #<temporarystorage>
+    #  name temporary storage for main data
+    #</temporarystorage>
+    #container-class Products.TemporaryFolder.TemporaryContainer
 
     mount-point /
 </zodb_db>
@@ -63,6 +63,7 @@ open(conf_file, "w").write(zope_conf % dict(
     db_name=db.path[1:],
     ))
 
+print zope_conf
 
 # Actually start zope
 os.environ["INSTANCE_HOME"] = instance_home
