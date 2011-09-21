@@ -9,6 +9,8 @@ skins causing SyntaxErrors :( You can't deploy your app in one push without
 blowing some timeouts on the git push. The 'slug' is nearly 40mb. Far from
 the hard limit, but around the point heroku tell you to start trimming your fat.
 
+RelStorage is close, but not quite working.
+
 Has potential, but not ready for Plone at this time.
 
 
@@ -193,4 +195,49 @@ up::
         print "Unexpected error:", sys.exc_info()
 
 So where is my DATABASE_URL!?
+
+It looks like you need a bit of django_bait to get a DATABASE_URL.... I started
+yet another app but with django_bait in place from the start and it has a
+DATABASE_URL \o/
+
+Starting up the app now yields::
+
+    2011-09-21T21:07:33+00:00 heroku[web.1]: State changed from starting to up
+    2011-09-21T21:07:34+00:00 app[web.1]: Traceback (most recent call last):
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/bin/runzope", line 9, in <module>
+    2011-09-21T21:07:34+00:00 app[web.1]:     load_entry_point('Zope2==2.13.8', 'console_scripts', 'runzope')()
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/Zope2/Startup/run.py", line 21, in run
+    2011-09-21T21:07:34+00:00 app[web.1]:     starter.prepare()
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/Zope2/Startup/__init__.py", line 86, in prepare
+    2011-09-21T21:07:34+00:00 app[web.1]:     self.startZope()
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/Zope2/Startup/__init__.py", line 259, in startZope
+    2011-09-21T21:07:34+00:00 app[web.1]:     Zope2.startup()
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/Zope2/__init__.py", line 47, in startup
+    2011-09-21T21:07:34+00:00 app[web.1]:     _startup()
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/Zope2/App/startup.py", line 81, in startup
+    2011-09-21T21:07:34+00:00 app[web.1]:     DB = dbtab.getDatabase('/', is_root=1)
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/Zope2/Startup/datatypes.py", line 287, in getDatabase
+    2011-09-21T21:07:34+00:00 app[web.1]:     db = factory.open(name, self.databases)
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/Zope2/Startup/datatypes.py", line 185, in open
+    2011-09-21T21:07:34+00:00 app[web.1]:     DB = self.createDB(database_name, databases)
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/Zope2/Startup/datatypes.py", line 182, in createDB
+    2011-09-21T21:07:34+00:00 app[web.1]:     return ZODBDatabase.open(self, databases)
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/ZODB/config.py", line 101, in open
+    2011-09-21T21:07:34+00:00 app[web.1]:     storage = section.storage.open()
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/relstorage/config.py", line 33, in open
+    2011-09-21T21:07:34+00:00 app[web.1]:     return RelStorage(adapter, name=config.name, options=options)
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/relstorage/storage.py", line 167, in __init__
+    2011-09-21T21:07:34+00:00 app[web.1]:     self._adapter.schema.prepare()
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/relstorage/adapters/schema.py", line 949, in prepare
+    2011-09-21T21:07:34+00:00 app[web.1]:     self.connmanager.open_and_call(callback)
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/relstorage/adapters/connmanager.py", line 76, in open_and_call
+    2011-09-21T21:07:34+00:00 app[web.1]:     res = callback(conn, cursor)
+    2011-09-21T21:07:34+00:00 app[web.1]:   File "/app/lib/python2.7/site-packages/relstorage/adapters/schema.py", line 939, in callback
+    2011-09-21T21:07:34+00:00 app[web.1]:     self.install_procedures(cursor)
+    2011-09-21T21:07:34+00:00 app[web.1]:     cursor.execute("CREATE LANGUAGE plpgsql")
+    2011-09-21T21:07:34+00:00 app[web.1]:
+    2011-09-21T21:07:34+00:00 heroku[web.1]: Process exited
+    2011-09-21T21:07:35+00:00 heroku[web.1]: State changed from up to crashed
+
+Bummer. Maybe i'll just run my site out of RAM...
 
