@@ -73,7 +73,7 @@ database_url = os.environ.get("DATABASE_URL", None)
 
 
 # Figure out directory structure based on where this script is
-root_dir = os.path.join(os.getcwd(), os.path.dirname(__file__), "..")
+root_dir = os.path.join(os.getcwd(), os.path.dirname(__file__))
 instance_home = os.path.join(root_dir, "zope")
 conf_file = os.path.join(instance_home, "etc", "zope.conf")
 zdctl = os.path.join(root_dir, "bin", "zopectl")
