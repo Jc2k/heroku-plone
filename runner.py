@@ -43,7 +43,7 @@ instancehome %(instance_home)s
   address %(port)s
 </http-server>
 
-%import relstorage
+%%import relstorage
 <zodb_db main>
     %(storage)s
 
