@@ -103,6 +103,7 @@ else:
 open(conf_file, "w").write(zope_conf % dict(
     instance_home=instance_home,
     port=options.port,
+    storage=storage,
     ))
 
 print os.environ
