@@ -128,4 +128,69 @@ Heroku. But just like before I can no longer push to that app.
 So I trashed that environment and started again - this time I was going to play
 with RelStorage.
 
+I disabled Plone in my requirements.txt and built Zope again. Reshuffling my
+test scripts to push on GitHub had broken the runner. 7 or 8 pushes later and
+it was working again - backed up my assumptions about Plone being to blame
+for the eventual non-updateableness of my app.
+
+Incidentally to see why your app didn't start just use ``~/bin/heroku logs``::
+
+    2011-09-21T20:28:28+00:00 heroku[web.1]: Starting process with command `./bin/python runner.py -p 54808`
+    2011-09-21T20:28:29+00:00 app[web.1]: sh: /app/../bin/mkzopeinstance: not found
+    2011-09-21T20:28:29+00:00 app[web.1]: Traceback (most recent call last):
+    2011-09-21T20:28:29+00:00 app[web.1]:   File "runner.py", line 99, in <module>
+    2011-09-21T20:28:29+00:00 heroku[web.1]: Process exited
+    2011-09-21T20:28:29+00:00 heroku[web.1]: State changed from starting to crashed
+
+A good build would look like this::
+
+    2011-09-21T20:33:54+00:00 heroku[web.1]: Starting process with command `./bin/python runner.py -p 55375`
+    2011-09-21T20:33:54+00:00 app[web.1]: {'PATH': 'bin:/usr/local/bin:/usr/bin:/bin', 'PYTHONUNBUFFERED': 'true', 'PORT': '55375', 'HOME': '/app'}
+    2011-09-21T20:33:55+00:00 app[web.1]: /app/zope/bin/runzope -X debug-mode=on
+    2011-09-21T20:33:56+00:00 app[web.1]: 2011-09-21 20:33:56 INFO ZServer HTTP server started at Wed Sep 21 20:33:56 2011
+    2011-09-21T20:33:56+00:00 app[web.1]: 2011-09-21 20:33:56 INFO Zope Ready to handle requests
+    2011-09-21T20:33:56+00:00 heroku[web.1]: State changed from starting to up
+
+But DATABASE_URL was not set.
+
+I added a new folder called django_bait which had a settings.py. The folder
+structure was now::
+
+    requirements.txt
+    runner.py
+    Procfile
+    django_bait/
+        settings.py
+
+Heroku detected the settings.py, decided this was a Django app and updated it
+with DB settings.
+
+To see a file that Heroku has fiddled with you can cat it::
+
+    ~/bin/heroku run cat django_bait/settings.py
+
+And happily my assumption that DATABASE_URL should be in os.environ was backed
+up::
+
+    import os, sys, urlparse
+    urlparse.uses_netloc.append('postgres')
+    urlparse.uses_netloc.append('mysql')
+    try:
+        if os.environ.has_key('DATABASE_URL'):
+            url = urlparse.urlparse(os.environ['DATABASE_URL'])
+            DATABASES['default'] = {
+                'NAME':     url.path[1:],
+                'USER':     url.username,
+                'PASSWORD': url.password,
+                'HOST':     url.hostname,
+                'PORT':     url.port,
+            }
+            if url.scheme == 'postgres':
+                DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+            if url.scheme == 'mysql':
+                DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+    except:
+        print "Unexpected error:", sys.exc_info()
+
+So where is my DATABASE_URL!?
 
