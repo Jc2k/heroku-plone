@@ -239,5 +239,10 @@ Starting up the app now yields::
     2011-09-21T21:07:34+00:00 heroku[web.1]: Process exited
     2011-09-21T21:07:35+00:00 heroku[web.1]: State changed from up to crashed
 
-Bummer. Maybe i'll just run my site out of RAM...
+Bummer. Maybe i'll just run my site out of RAM... What didn't show up in that
+log but did show up when i did ``~/bin/heroku run bin/python runner.py debug``
+was::
+
+    psycopg2.ProgrammingError: must be owner of database foobarbaz
+
 
