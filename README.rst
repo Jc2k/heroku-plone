@@ -245,4 +245,54 @@ was::
 
     psycopg2.ProgrammingError: must be owner of database foobarbaz
 
+Fixed by downgrading to RelStorage 1.4.x - this version doesn't need the
+stored procedures.
+
+Now to sort out URLs.
+
+http://old.zope.org/Members/4am/SiteAccess2/vhosting
+
+I added a SiteRoot object to ``/Plone`` with the default settings.
+
+I added a DTMLMethod to the ``/`` called penguin that contained::
+
+    Is there a path, and does it start with 'Z'?
+    <dtml-let stack="REQUEST['TraversalRequestNameStack']">
+      <dtml-if "stack and stack[-1]=='Z'">
+        Get rid of 'Z':     <dtml-call "stack.pop()">
+        Put it back logically: <dtml-call "REQUEST.setVirtualRoot('Z')">
+      <dtml-else>
+        <dtml-call "REQUEST['TraversalRequestNameStack'].append('Plone')">
+      </dtml-if>
+    </dtml-let>
+
+I added an AccessRule to ``/`` and told it to use the ``penguin`` method.
+
+Now anyone accessing the root of my app will get ``/Plone``. To get to the ZMI
+you go to ``/Z/manage``.
+
+Weaponising
+-----------
+
+In an ideal world I would create a single egg that contained the runner and all
+the requirements. You would do something like this in your requirements::
+
+    heroku-plone [zope-2.13.8]
+
+And then you would push::
+
+    heroku-plone [plone-4.1]
+
+This would get around managing a 230 line requirements.txt in multiple projects
+and currently is enough to work around the too-much-at-once limit of heroku.
+
+Unfortunately pip doesnt support ``extras_requires`` so this doesnt work!!
+
+The next option is to create a meta-package for each supported plone version:
+
+    heroku-zope-2-13-8
+    heroku-plone-4-1
+
+Much messier but still hides away the requirements.txt.
+
 
